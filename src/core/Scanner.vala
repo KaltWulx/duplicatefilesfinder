@@ -50,8 +50,6 @@ public class DuplicateFiles.Scanner : GLib.Object {
     public async void start_scan () {
 
         cancel_operation = new GLib.Cancellable ();
-       // GLib.debug("Lanzando el hilo....\n");
-
         new Thread<int> (null, () => {
             try {
                 cancel_operation.set_error_if_cancelled ();
@@ -69,7 +67,6 @@ public class DuplicateFiles.Scanner : GLib.Object {
             }
         });
         yield;
-        //GLib.debug("Saliendo de la funcion...\n");
     }
 
 
@@ -79,9 +76,7 @@ public class DuplicateFiles.Scanner : GLib.Object {
                 this.map_ocurrences_clean.set(entry.key, entry.value);
             }
         }
-
         map_ocurrences.clear();
-
     }
 
     private string files_attributes () {
@@ -157,8 +152,6 @@ public class DuplicateFiles.Scanner : GLib.Object {
             foreach(string file in files) {
                 fill_map(file);
                 _progress = (files.index_of(file) + 1) / (double) total;
-
-                //GLib.debug("PROGRESO (%d / %d): %f\n", files.index_of(file) + 1 , total , progress);
             }
         }
     }
@@ -171,12 +164,12 @@ public class DuplicateFiles.Scanner : GLib.Object {
 
 
         if( map_ocurrences.has_key (key) ) {
-            var new_mapped_file = map_ocurrences.get (key);
-            new_mapped_file.count = new_mapped_file.count + 1;
-            new_mapped_file.paths.add (file);
+            var new_ocurrence = map_ocurrences.get (key);
+            new_ocurrence.count = new_mapped_file.count + 1;
+            new_ocurrence.paths.add (file);
 
             map_ocurrences.unset (key, null);
-            map_ocurrences.set (key, new_mapped_file);
+            map_ocurrences.set (key, new_ocurrence);
         } else {
             var mapped_file = new FileOcurrence ();
             mapped_file.paths.add (file);
@@ -202,18 +195,14 @@ public class DuplicateFiles.Scanner : GLib.Object {
         stream.seek( (long) Math.floor(size * 20 /100) , GLib.FileSeek.CUR);
         data = stream.read(buffer);
         checksum.update(buffer, data);
-        //stdout.printf("Size: %ld bytes |  Porcent: %f\n", size,  Math.floor(size * 25 /100));
 
         stream.seek( (long) Math.floor(size * 55 /100) , GLib.FileSeek.CUR);
         data = stream.read(buffer);
         checksum.update(buffer, data);
-        //stdout.printf("Size: %ld bytes | Porcent: %f\n", size,  Math.floor(size * 60 /100));
 
         stream.seek ((long) Math.floor(size * 85 / 100), GLib.FileSeek.CUR);
         data = stream.read(buffer);
         checksum.update(buffer, data);
-        //stdout.printf("Size: %ld bytes | Porcent: %f\n", size,  Math.floor(size * 90 /100));
-
 
         unowned string digest_key = checksum.get_string ();
         return digest_key;
