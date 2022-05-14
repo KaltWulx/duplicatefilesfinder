@@ -165,7 +165,7 @@ public class DuplicateFiles.Scanner : GLib.Object {
 
         if( map_ocurrences.has_key (key) ) {
             var new_ocurrence = map_ocurrences.get (key);
-            new_ocurrence.count = new_mapped_file.count + 1;
+            new_ocurrence.count = new_ocurrence.count + 1;
             new_ocurrence.paths.add (file);
 
             map_ocurrences.unset (key, null);
