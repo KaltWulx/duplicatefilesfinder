@@ -90,7 +90,6 @@ public class DuplicateFiles.Resume: Gtk.Grid {
 		    margin = 2,
 		};
 
-
 		info_bar = new Gtk.InfoBar();
 		info_bar.set_message_type(Gtk.MessageType.WARNING);
 		spinner = new Gtk.Spinner();
@@ -107,7 +106,6 @@ public class DuplicateFiles.Resume: Gtk.Grid {
 		grid = new Gtk.Grid();
 		grid.attach(box, 0, 0, 1, 1);
 		grid.attach(panel, 0, 1, 1, 1);
-//		grid.attach(info_bar, 0, 2, 1, 1);
 
 		Gtk.Separator separator = new Gtk.Separator (Gtk.Orientation.VERTICAL);
 		grid.attach(separator, 1, 0, 1, 2);
@@ -118,7 +116,6 @@ public class DuplicateFiles.Resume: Gtk.Grid {
         scrolled.add(box_viewer);
 
         grid.attach(scrolled, 2,0,1,2);
-		//add(grid);
 		this.attach(grid, 0, 1, 1,1);
 		this.attach(info_bar, 0, 0, 1,1);
 		show_all();
@@ -135,33 +132,32 @@ public class DuplicateFiles.Resume: Gtk.Grid {
     }
 
     public async bool fill_resume() {
-        int i = 0;
+        int position = 0;
         string map_size = scanner.map_ocurrences_clean.size.to_string ();
 
         foreach(var entry in scanner.map_ocurrences_clean.entries) {
 
-                    var viewer = new DuplicateFiles.DuplicateViewer(entry.value.paths, i);
-                    box_viewer.pack_start(viewer, true, true, 0);
-                    list_viewer.add(viewer);
-                    i++;
-                    string data_label = "Llenando vista: "+ i.to_string () +"/"+ map_size
-                      + "...";
-                    label_aux.label = data_label;
-                    GLib.Idle.add(fill_resume.callback);
-                    yield;
+            var viewer = new DuplicateFiles.DuplicateViewer(entry.value.paths, position);
+            box_viewer.pack_start(viewer, true, true, 0);
+            list_viewer.add(viewer);
+            position++;
+            string data_label = "Llenando vista: "+ position.to_string () +"/"+ map_size
+                + "...";
+            label_aux.label = data_label;
+            GLib.Idle.add(fill_resume.callback);
+            yield;
         }
         return true;
     }
 
     public void fill_panel_categories() {
         check_categories.begin( (obj, res) => {
-                var result = check_categories.end(res);
-                if(result) {
-                    panel.update_ui();
-                    hide_info_bar();
-                }
+            var result = check_categories.end(res);
+            if(result) {
+                panel.update_ui();
+                hide_info_bar();
+            }
         });
-
     }
 
     public async bool check_categories () {
@@ -196,7 +192,6 @@ public class DuplicateFiles.Resume: Gtk.Grid {
 
 
     private void show_category (string row_category) {
-        //show all categories...
         foreach(DuplicateViewer viewer in list_viewer) {
             viewer.visible = true;
         }

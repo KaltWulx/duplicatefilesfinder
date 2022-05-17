@@ -52,7 +52,6 @@ public class DuplicateFiles.Scanner : GLib.Object {
         new Thread<int> (null, () => {
             try {
                 cancel_operation.set_error_if_cancelled ();
-
                 File file_path = File.new_for_path(path);
 
                 list_files(file_path);
@@ -84,7 +83,6 @@ public class DuplicateFiles.Scanner : GLib.Object {
                 FileAttribute.STANDARD_SIZE,
                 FileAttribute.STANDARD_ALLOCATED_SIZE);
     }
-
 
     /*
         Return true if the file is a directory and is not hidden.
@@ -155,9 +153,7 @@ public class DuplicateFiles.Scanner : GLib.Object {
     }
 
     private  void fill_map (string file) {
-        //GLib.debug("Calculando hash para %s", file);
         _actual_file = file;
-        //var key = calculate_hash(file);
         var key = partial_hash(file);
 
         if( map_ocurrences.has_key (key) ) {
@@ -176,7 +172,7 @@ public class DuplicateFiles.Scanner : GLib.Object {
     }
 
     private string partial_hash (string file) {
-        var checksum = new Checksum(GLib.ChecksumType.MD5);
+        var checksum = new Checksum(hash_type);
         FileStream stream = FileStream.open(file, "rb");
 
         assert(stream != null);

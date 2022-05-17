@@ -6,7 +6,6 @@ public class DuplicateFiles.StartHomeScan: Gtk.Grid {
     private Gtk.Button btn_back;
     private Gtk.ProgressBar progress_bar;
     private uint source;
-    private string view_name;
     private Gtk.Label lb_file;
     private Gtk.Label lb_count;
 
@@ -14,19 +13,14 @@ public class DuplicateFiles.StartHomeScan: Gtk.Grid {
     private Resume resume;
 
     public StartHomeScan (Gtk.Stack stack, Gtk.Button btn_back, Resume resume) {
+        this.resume = resume;
+        this.stack = stack;
+        this.btn_back = btn_back;
 
-            this.resume = resume;
-            this.stack = stack;
-            this.btn_back = btn_back;
-
-            scanner = new Scanner(
-                               //GLib.Environment.get_home_dir (),
-                               GLib.Environment.get_home_dir (),
-                               GLib.ChecksumType.MD5);
+        scanner = new Scanner(GLib.Environment.get_home_dir (), GLib.ChecksumType.MD5);
     }
 
     public void create_ui () {
-
         progress_bar = new Gtk.ProgressBar ();
 
         var lb_title = new Gtk.Label ("Scan in progress");
@@ -74,45 +68,23 @@ public class DuplicateFiles.StartHomeScan: Gtk.Grid {
             valign = Gtk.Align.CENTER
         };
 
-        var main_vbox = new Gtk.Box (Gtk.Orientation.VERTICAL, 5) {
-            halign = Gtk.Align.CENTER,
-            valign = Gtk.Align.CENTER
-        };
-
         hbox_btn_cancel.pack_start (btn_cancel, false, false, 0);
         hbox_count_cancel.pack_start (hbox_btn_cancel, false, false, 0);
         hbox_count_cancel.pack_end (lb_count, false, false, 5);
 
-/*
-        main_vbox.add (hbox_lb_title);
-        main_vbox.add (hbox_lb_subtitle);
-        main_vbox.add (lb_file);
-        main_vbox.add (progress_bar);
-        main_vbox.add (hbox_count_cancel);
-*/
-
         var grid_aux = new Gtk.Grid();
         grid_aux.expand = false;
         grid_aux.hexpand = false;
-        //attach (Widget child, int left, int top, int width = 1, int height = 1)
         grid_aux.attach(hbox_lb_title, 0,0,1,1);
         grid_aux.attach(hbox_lb_subtitle, 0,1,1,1);
         grid_aux.attach(lb_file, 0,2,1,1);
         grid_aux.attach(progress_bar, 0,3,1,1);
         grid_aux.attach(hbox_count_cancel, 0,4,1,1);
 
-        /*
-        main_vbox.pack_start(hbox_lb_title, false, false, 0);
-        main_vbox.pack_start(hbox_lb_subtitle, false, false, 0);
-        main_vbox.pack_start(lb_file, false, false, 0);
-        main_vbox.pack_start(progress_bar, false, false, 0);
-        main_vbox.pack_start(hbox_count_cancel, false, false, 0);
-        */
-        main_hbox.pack_start(icon, false, false, 0);// (icon);
-        main_hbox.pack_start(grid_aux, false, false, 0);// (main_vbox);
+        main_hbox.pack_start(icon, false, false, 0);
+        main_hbox.pack_start(grid_aux, false, false, 0);
 
         add (main_hbox);
-        this.expand = false;
         show_all();
 
         btn_cancel.clicked.connect ( ()=> {
@@ -127,16 +99,19 @@ public class DuplicateFiles.StartHomeScan: Gtk.Grid {
 
             if(progress_bar.fraction >= 1.0) {
                 stack.set_visible_child_name("resume");
+
                 scanner.clean_map();
+
                 resume.set_data(scanner);
                 resume.disable_ui ();
+
                 resume.fill_resume.begin( (obj, res) => {
                     var result = resume.fill_resume.end(res);
                     if(result) {
                         resume.fill_panel_categories();
-
                     }
                 });
+
                 progress_bar.fraction = 0.0;
             }
         });
@@ -146,15 +121,11 @@ public class DuplicateFiles.StartHomeScan: Gtk.Grid {
 
         progress_bar.set_text ("");
         progress_bar.set_show_text (false);
-        Granite.Services.Application.set_progress_visible.begin (true);
-        Granite.Services.Application.set_progress.begin (0.5f);
         scanner.start_scan.begin();
 
         source = GLib.Idle.add( ()=> {
             double progress = scanner.progress;
             progress_bar.set_fraction(progress);
-
-            //Granite.Services.Application.set_progress.begin (progress);
 
             lb_file.label = scanner.actual_file;
 

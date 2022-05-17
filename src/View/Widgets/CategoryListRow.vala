@@ -38,16 +38,15 @@ public class DuplicateFiles.CategoryListRow : Gtk.ListBoxRow {
 		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5) {
 		    halign = Gtk.Align.START,
 		    valign = Gtk.Align.BASELINE,
-
 		};
         box.set_center_widget(lb_text);
         box.pack_start(icon, true, true, 0);
-
 
 		var box_lb = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0) {
 		    halign = Gtk.Align.END,
 		    valign = Gtk.Align.BASELINE,
 		};
+
         box_lb.pack_end(lb_len_data, true, true, 0);
 
 		grid.attach(box, 0,0,1,1);

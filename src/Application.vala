@@ -3,7 +3,6 @@ using Granite;
 public class DuplicateFiles.Application : Gtk.Application {
 
     private Welcome welcome;
-
     private Gtk.ApplicationWindow window;
     private Gtk.Stack stack;
     private Gtk.Button btn_back;
@@ -20,17 +19,13 @@ public class DuplicateFiles.Application : Gtk.Application {
         window = new Gtk.ApplicationWindow (this);
 		window.window_position = Gtk.WindowPosition.CENTER;
 		window.destroy.connect (Gtk.main_quit);
-		//window.set_default_size (700, 450);
+
 		window.set_size_request(800,550);
-		//window.expand = false;
-        //window.resizable = false;
-        //window.set_preferred_size(700, 400);
 		window.get_style_context() .add_class (Granite.STYLE_CLASS_ROUNDED);
 
 		bar = new Gtk.HeaderBar ();
 		bar.show_close_button = true;
 		bar.set_title ("Duplicate Files Finder");
-
 		window.set_titlebar (bar);
 
         btn_back = new Gtk.Button.with_label("Welcome window");
@@ -51,11 +46,7 @@ public class DuplicateFiles.Application : Gtk.Application {
 
         window.show_all ();
         window.present();
-
-        Granite.Services.Application.set_progress_visible.begin (true);
-		Granite.Services.Application.set_progress.begin (0.2f);
     }
-
 
      public override void startup () {
         base.startup ();
@@ -70,10 +61,8 @@ public class DuplicateFiles.Application : Gtk.Application {
 
         css_provider = new Gtk.CssProvider ();
         Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
-
-
-
     }
+
     public override void quit_mainloop() {
         GLib.debug ("Quitting mainloop\n");
         base.quit_mainloop();

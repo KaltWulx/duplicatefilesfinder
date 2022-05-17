@@ -1,10 +1,7 @@
 public class DuplicateFiles.Panel: Gtk.Grid {
-
     public Gtk.ListBox list_box;
-
     private Categories categories;
     private CategorySizeSum size_sum;
-
     private CategoryListRow row_all;
     private CategoryListRow row_apps;
     private CategoryListRow row_audio;
@@ -63,9 +60,7 @@ public class DuplicateFiles.Panel: Gtk.Grid {
 	    }
     }
 
-
 	public void create_ui () {
-
         row_all = new DuplicateFiles.CategoryListRow ("application-octet-stream", "All Duplicates", "...");
         row_apps = new CategoryListRow ("application-x-desktop", "Applications", "...");
         row_audio = new CategoryListRow ("audio-x-generic", "Audio", "...");

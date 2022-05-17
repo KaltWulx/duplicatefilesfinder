@@ -19,7 +19,6 @@ public class DuplicateFiles.DuplicateViewer : Gtk.Grid {
         get { return _content_type; }
     }
 
-
     public DuplicateViewer( Gee.ArrayList<string> list_files, int instance) {
         this.list_files = list_files;
         this.instance = instance;
@@ -46,9 +45,7 @@ public class DuplicateFiles.DuplicateViewer : Gtk.Grid {
 		    expand = true,
 		    margin = 3,
 		};
-
         main_box.attach(stack_tree, 0, 1, 3, 1);
-
         add(main_box);
 
         var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3) {
@@ -61,9 +58,7 @@ public class DuplicateFiles.DuplicateViewer : Gtk.Grid {
         lb_count_selected = new Gtk.Label("0 | " + list_files.size.to_string ());
         lb_count_selected.halign = Gtk.Align.END;
 
-
         var file = File.new_for_path(list_files.get(0));
-
         _content_type = ContentType.guess(list_files.get(0), new uchar[0], null);
 
         FileInfo file_info = file.query_info("standard::*", 0);
@@ -103,20 +98,16 @@ public class DuplicateFiles.DuplicateViewer : Gtk.Grid {
                 stack_tree.set_visible_child_name("empty-box");
                 tree_view.visible = false;
                 string css_effect = "#"+ event_box.name +" {background-color: transparent;}";
-                GLib.debug("%s\n",css_effect);
                 Application.css_provider.load_from_data(css_effect);
 
             } else {
                 tree_view.visible = true;
                 stack_tree.set_visible_child(tree_view);
                 string css_effect = "#"+ event_box.name +" {background-color: rgba(213, 235, 253, 1);}";
-                GLib.debug("%s\n",css_effect);
                 Application.css_provider.load_from_data(css_effect);
             }
          return true;
         });
-
-
     }
 
     private void add_treeview() {
@@ -134,7 +125,6 @@ public class DuplicateFiles.DuplicateViewer : Gtk.Grid {
 			list_store.get_iter (out iter, tree_path);
 			list_store.set (iter, 0, !toggle.active);
 		});
-
 
         var pixbuf = new Gtk.CellRendererPixbuf();
         var file_name = new Gtk.CellRendererText();
@@ -178,7 +168,6 @@ public class DuplicateFiles.DuplicateViewer : Gtk.Grid {
             FileInfo info = f.query_info("standard::*", 0);
 
             _size_sum += info.get_size ();
-            GLib.debug("TAMAÑO: %s\n", size_sum.to_string ());
 
             Icon icon = info.get_icon ();
             Gtk.IconInfo icon_info = Gtk.IconTheme.get_default ().lookup_by_gicon(icon, 16, Gtk.IconLookupFlags.DIR_LTR);
@@ -197,5 +186,4 @@ public class DuplicateFiles.DuplicateViewer : Gtk.Grid {
                 stack_tree.set_visible_child(tree_view);
          }
     }
-
 }
