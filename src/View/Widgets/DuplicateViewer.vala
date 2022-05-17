@@ -7,23 +7,38 @@ public class DuplicateFiles.DuplicateViewer : Gtk.Grid {
     private Gtk.EventBox event_box;
     private Gtk.Stack stack_tree;
     private Gtk.Label lb_count_selected;
-    private int n;
+    private int instance;
 
-    public DuplicateViewer( Gee.ArrayList<string> list_files, int n) {
+    private string _content_type;
+    private int64 _size_sum;
+
+    public int64 size_sum {
+        get {return _size_sum; }
+    }
+    public string content_type {
+        get { return _content_type; }
+    }
+
+
+    public DuplicateViewer( Gee.ArrayList<string> list_files, int instance) {
         this.list_files = list_files;
-        this.n = n;
+        this.instance = instance;
         create_widget();
     }
 
     public void create_widget() {
 
-        event_box = new Gtk.EventBox();
-        event_box.name = "caja"+ n.to_string();
+        event_box = new Gtk.EventBox() {
+            vexpand = false,
+            valign = Gtk.Align.START,
+            halign = Gtk.Align.START,
+        };
+        event_box.name = "duplicate-viewer-"+ instance.to_string();
 
         stack_tree = new Gtk.Stack() {
 		    transition_type = Gtk.StackTransitionType.SLIDE_DOWN,
 		    hexpand = true,
-		    halign = Gtk.Align.FILL,
+		    halign = Gtk.Align.START,
 		};
 
         main_box = new Gtk.Grid() {
@@ -48,6 +63,9 @@ public class DuplicateFiles.DuplicateViewer : Gtk.Grid {
 
 
         var file = File.new_for_path(list_files.get(0));
+
+        _content_type = ContentType.guess(list_files.get(0), new uchar[0], null);
+
         FileInfo file_info = file.query_info("standard::*", 0);
         Icon icon = file_info.get_icon ();
 
@@ -57,13 +75,8 @@ public class DuplicateFiles.DuplicateViewer : Gtk.Grid {
         box.pack_start(icon_pixbuf, true, true, 0);
 
         var lb_file_name = new Gtk.Label(file_info.get_name ());
-
-
-
         lb_file_name.halign = Gtk.Align.START;
         lb_file_name.valign = Gtk.Align.START;
-        //lb_file_name.width_chars = 40;
-        lb_file_name.wrap = true;
 
         var lb_size = new Gtk.Label(GLib.format_size(file_info.get_size()));
         lb_size.halign = Gtk.Align.START;
@@ -163,6 +176,9 @@ public class DuplicateFiles.DuplicateViewer : Gtk.Grid {
 
             var f = File.new_for_path(list_files.get (i) );
             FileInfo info = f.query_info("standard::*", 0);
+
+            _size_sum += info.get_size ();
+            GLib.debug("TAMAÑO: %s\n", size_sum.to_string ());
 
             Icon icon = info.get_icon ();
             Gtk.IconInfo icon_info = Gtk.IconTheme.get_default ().lookup_by_gicon(icon, 16, Gtk.IconLookupFlags.DIR_LTR);

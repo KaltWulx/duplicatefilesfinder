@@ -5,6 +5,8 @@ project('com.github.KaltWulx.duplicatefiles', ['c', 'vala'],
                    ],
 )
 i18n = import('i18n')
+add_global_arguments('-DGETTEXT_PACKAGE="@0@"'.format (meson.project_name()), language:'c')
+
 dependencies = [
 	dependency('gobject-2.0'),
 	dependency('glib-2.0'),
@@ -21,7 +23,7 @@ sources = files(
 	'src/View/PrepareHomeScan.vala',
 	'src/View/StartHomeScan.vala',
 	'src/View/Resume.vala',
-		'src/View/Widgets/IconListRow.vala',
+		'src/View/Widgets/CategoryListRow.vala',
 		'src/View/Widgets/Panel.vala',
 		'src/View/Widgets/DuplicateViewer.vala',
 

@@ -1,58 +1,83 @@
+public class DuplicateFiles.Panel: Gtk.Grid {
 
+    public Gtk.ListBox list_box;
 
-public class Widget.Panel: Gtk.Grid {
+    private Categories categories;
+    private CategorySizeSum size_sum;
 
-	public Panel () {
+    private CategoryListRow row_all;
+    private CategoryListRow row_apps;
+    private CategoryListRow row_audio;
+    private CategoryListRow row_document;
+    private CategoryListRow row_image;
+    private CategoryListRow row_video;
 
+	public Panel (Categories categories, CategorySizeSum size_sum) {
 		orientation = Gtk.Orientation.HORIZONTAL;
+		this.categories = categories;
+		this.size_sum = size_sum;
 
-		create_ui ();
-	}
-
-	private void create_ui () {
-
-		var listbox = new Gtk.ListBox() {
+		list_box = new Gtk.ListBox() {
 		    vexpand = true,
 		    activate_on_single_click = true,
             selection_mode = Gtk.SelectionMode.SINGLE
 		};
 
-		var row1 = new Widget.IconListRow ("application-octet-stream", "All Duplicates", "25 GB");
-		var row2 = new Widget.IconListRow ("application-x-desktop", "Applications", "2 GB");
-		var row3 = new Widget.IconListRow ("audio-x-generic", "Audio", "9.4 MB");
-		var row4 = new Widget.IconListRow ("text-x-generic", "Documents", "4 GB");
-		var row5 = new Widget.IconListRow ("folder", "Folders", "321.4 GB");
-		var row6 = new Widget.IconListRow ("image-x-generic", "Images", "5.8 MB");
-		var row7 = new Widget.IconListRow ("folder-videos", "Video", "12 GB");
-
-		listbox.add (row1);
-		listbox.add (row2);
-		listbox.add (row3);
-		listbox.add (row4);
-		listbox.add (row5);
-		listbox.add (row6);
-		listbox.add (row7);
-
-
-        //GLib.debug("Creando otra fila..\n");
-		//var row_aux = new Test();
-		//listbox.add(row_aux);
-
-		add(listbox);
+        add(list_box);
+        create_ui ();
 	}
-}
 
+    public void update_ui() {
 
-public class Test : Gtk.ListBoxRow {
+        var total_size_sum = size_sum.application + size_sum.audio + size_sum.document + size_sum.image + size_sum.video;
+        row_all.lb_len_data.set_markup ("<small><b>"+GLib.format_size(total_size_sum)+"</b></small>");
 
-    public Test() {
+		if(categories.application) {
+			row_apps.lb_len_data.set_markup ("<small><b>"+GLib.format_size(size_sum.application)+"</b></small>");
+	    } else {
+		    list_box.remove(row_apps);
+	    }
 
-        Gtk.Box box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+        if(categories.audio) {
+        	row_audio.lb_len_data.set_markup ("<small><b>"+GLib.format_size(size_sum.audio)+"</b></small>");
+	    } else {
+            list_box.remove(row_audio);
+	    }
 
-		var lb = new Gtk.Label("AAAA");
-		box.add(lb);
-		add(box);
-		//show_all();
+	    if(categories.document) {
+	        row_document.lb_len_data.set_markup ("<small><b>"+GLib.format_size(size_sum.document)+"</b></small>");
+	    } else {
+            list_box.remove(row_document);
+	    }
+
+	    if(categories.image) {
+	        row_image.lb_len_data.set_markup ("<small><b>"+GLib.format_size(size_sum.image)+"</b></small>");
+	    } else {
+            list_box.remove(row_image);
+	    }
+
+	    if(categories.video) {
+	        row_video.lb_len_data.set_markup ("<small><b>"+GLib.format_size(size_sum.video)+"</b></small>");
+	    } else {
+           list_box.remove(row_video);
+	    }
     }
 
+
+	public void create_ui () {
+
+        row_all = new DuplicateFiles.CategoryListRow ("application-octet-stream", "All Duplicates", "...");
+        row_apps = new CategoryListRow ("application-x-desktop", "Applications", "...");
+        row_audio = new CategoryListRow ("audio-x-generic", "Audio", "...");
+        row_document = new CategoryListRow ("text-x-generic", "Documents", "...");
+        row_image = new CategoryListRow ("image-x-generic", "Images", "...");
+        row_video = new CategoryListRow ("folder-videos", "Video", "...");
+
+        list_box.add(row_all);
+        list_box.add(row_apps);
+        list_box.add(row_audio);
+        list_box.add(row_document);
+        list_box.add(row_image);
+        list_box.add(row_video);
+	}
 }

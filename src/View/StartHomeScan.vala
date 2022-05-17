@@ -22,7 +22,7 @@ public class DuplicateFiles.StartHomeScan: Gtk.Grid {
             scanner = new Scanner(
                                //GLib.Environment.get_home_dir (),
                                GLib.Environment.get_home_dir (),
-                               GLib.ChecksumType.SHA1);
+                               GLib.ChecksumType.MD5);
     }
 
     public void create_ui () {
@@ -129,22 +129,15 @@ public class DuplicateFiles.StartHomeScan: Gtk.Grid {
                 stack.set_visible_child_name("resume");
                 scanner.clean_map();
                 resume.set_data(scanner);
-                resume.fill_resume.begin();
+                resume.disable_ui ();
+                resume.fill_resume.begin( (obj, res) => {
+                    var result = resume.fill_resume.end(res);
+                    if(result) {
+                        resume.fill_panel_categories();
 
-  //              resume.fill_resume.begin();
-                progress_bar.fraction = 0.0;
-                /*
-
-
-                foreach(var entry in scanner.map_ocurrences_clean.entries) {
-                    stdout.printf("Las rutas que tienen el mismo hash son:\n");
-
-                    foreach(var file_path in entry.value.paths) {
-                        stdout.printf("Ruta: %s\n", file_path);
                     }
-                stdout.printf("El hash %s tiene %d ocurrencias\n\n", entry.key, entry.value.count);
-                }
-               */
+                });
+                progress_bar.fraction = 0.0;
             }
         });
     }
@@ -154,18 +147,14 @@ public class DuplicateFiles.StartHomeScan: Gtk.Grid {
         progress_bar.set_text ("");
         progress_bar.set_show_text (false);
         Granite.Services.Application.set_progress_visible.begin (true);
+        Granite.Services.Application.set_progress.begin (0.5f);
         scanner.start_scan.begin();
 
-
-
         source = GLib.Idle.add( ()=> {
-
             double progress = scanner.progress;
             progress_bar.set_fraction(progress);
 
-            Granite.Services.Application.set_progress.begin (progress);
-
-           // GLib.debug("VALOR DEL PROGRESO!:::%f\n", progress);
+            //Granite.Services.Application.set_progress.begin (progress);
 
             lb_file.label = scanner.actual_file;
 

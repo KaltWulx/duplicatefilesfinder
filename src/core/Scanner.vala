@@ -46,7 +46,6 @@ public class DuplicateFiles.Scanner : GLib.Object {
         files = new Gee.ArrayList<string> ();
     }
 
-
     public async void start_scan () {
 
         cancel_operation = new GLib.Cancellable ();
@@ -68,7 +67,6 @@ public class DuplicateFiles.Scanner : GLib.Object {
         });
         yield;
     }
-
 
     public void clean_map () {
         foreach(var entry in this.map_ocurrences.entries) {
@@ -162,7 +160,6 @@ public class DuplicateFiles.Scanner : GLib.Object {
         //var key = calculate_hash(file);
         var key = partial_hash(file);
 
-
         if( map_ocurrences.has_key (key) ) {
             var new_ocurrence = map_ocurrences.get (key);
             new_ocurrence.count = new_ocurrence.count + 1;
@@ -177,7 +174,6 @@ public class DuplicateFiles.Scanner : GLib.Object {
             map_ocurrences.set (key, mapped_file);
         }
     }
-
 
     private string partial_hash (string file) {
         var checksum = new Checksum(GLib.ChecksumType.MD5);

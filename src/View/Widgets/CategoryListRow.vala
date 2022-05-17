@@ -1,10 +1,13 @@
-public class Widget.IconListRow : Gtk.ListBoxRow {
+public class DuplicateFiles.CategoryListRow : Gtk.ListBoxRow {
 
 	public string icon_name {get; set;}
 	public string text {get; set;}
 	public string len_data {get; set;}
 
-	public IconListRow (string icon_name, string text, string len_data) {
+	public Gtk.Label lb_len_data {get; set;}
+
+
+	public CategoryListRow (string icon_name, string text, string len_data) {
 
 		this.icon_name = icon_name;
 		this.text = text;
@@ -21,7 +24,7 @@ public class Widget.IconListRow : Gtk.ListBoxRow {
 		};
 
 		var lb_text = new Gtk.Label (text);
-		var lb_len_data = new Granite.HeaderLabel (len_data);
+		lb_len_data = new Granite.HeaderLabel (len_data);
 		lb_len_data.set_markup ("<small><b>"+len_data+"</b></small>");
 
 		var grid = new Gtk.Grid () {

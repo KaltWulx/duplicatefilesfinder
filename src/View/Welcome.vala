@@ -101,6 +101,7 @@ public class DuplicateFiles.Welcome : Gtk.Grid {
         });
         stack.set_visible_child_name("main");
         show_all();
+
 	}
 
 	private void create_view_objects() {

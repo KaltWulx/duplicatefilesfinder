@@ -11,7 +11,6 @@ public class DuplicateFiles.Application : Gtk.Application {
     public static Gtk.CssProvider css_provider;
 
     public Application() {
-
         application_id = "com.github.KaltWulx.duplicatefiles";
         flags |= GLib.ApplicationFlags.HANDLES_OPEN;
     }
@@ -52,6 +51,9 @@ public class DuplicateFiles.Application : Gtk.Application {
 
         window.show_all ();
         window.present();
+
+        Granite.Services.Application.set_progress_visible.begin (true);
+		Granite.Services.Application.set_progress.begin (0.2f);
     }
 
 
