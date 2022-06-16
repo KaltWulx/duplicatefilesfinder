@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2020 Kalt Wulx <ing.josemhf@gmail.com> -->
+<component type="desktop">
+  <id>com.github.KaltWulx.duplicatefiles</id>
+  <metadata_license>CC0</metadata_license>
+  <name>Duplicate Files Finder</name>
+  <summary>find duplicates files in your computer</summary>
+  <description>
+    <p>An easy method for find duplicates files in your computer</p>
+  </description>
+  <custom>
+    <value key="x-appcenter-color-primary">#603461</value>
+    <value key="x-appcenter-color-primary-text">rgb(255, 255, 255)</value>
+    <value key="x-appcenter-suggested-price">5</value>
+  </custom>
+</component>

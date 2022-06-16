@@ -8,6 +8,10 @@ public class DuplicateFiles.StartHomeScan: Gtk.Grid {
     private uint source;
     private Gtk.Label lb_file;
     private Gtk.Label lb_count;
+    private Gtk.Button btn_start_scan;
+    private Gtk.Label lb_title;
+    private Gtk.Label lb_subtitle;
+
 
     private Scanner scanner;
     private Resume resume;
@@ -17,21 +21,36 @@ public class DuplicateFiles.StartHomeScan: Gtk.Grid {
         this.stack = stack;
         this.btn_back = btn_back;
 
-        scanner = new Scanner(GLib.Environment.get_home_dir (), GLib.ChecksumType.MD5);
+        GLib.ChecksumType type = 0;
+        if(Application.settings.get_int("checksum-type") == 0) {
+            type = GLib.ChecksumType.MD5;
+        }
+        if(Application.settings.get_int("checksum-type") == 1) {
+            type = GLib.ChecksumType.SHA1;
+        }
+
+        scanner = new Scanner("/home/kaltwulx/Descargas", type);
     }
 
+
+//home/kaltwulx/.local/share/gvfs-metadata/home-0a45b383.log
+
     public void create_ui () {
+
+        btn_start_scan = new Gtk.Button.with_label("Start scan");
+
         progress_bar = new Gtk.ProgressBar ();
 
-        var lb_title = new Gtk.Label ("Scan in progress");
+        lb_title = new Gtk.Label ("Press start button");
         lb_title.get_style_context ().add_class(Granite.STYLE_CLASS_H2_LABEL);
 
-        var lb_subtitle = new Gtk.Label ("Search duplicates...");
+        lb_subtitle = new Gtk.Label ("");
         lb_subtitle.get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
 
         lb_file = new Gtk.Label (" ");
 
         lb_file.set_ellipsize (Pango.EllipsizeMode.MIDDLE);
+        lb_file.width_chars = 50;
         lb_file.max_width_chars = 1;
         lb_count = new Gtk.Label (" ");
 
@@ -68,7 +87,8 @@ public class DuplicateFiles.StartHomeScan: Gtk.Grid {
             valign = Gtk.Align.CENTER
         };
 
-        hbox_btn_cancel.pack_start (btn_cancel, false, false, 0);
+        hbox_btn_cancel.pack_start (btn_start_scan, false, false, 0);
+        hbox_btn_cancel.pack_start (btn_cancel, false, false, 10);
         hbox_count_cancel.pack_start (hbox_btn_cancel, false, false, 0);
         hbox_count_cancel.pack_end (lb_count, false, false, 5);
 
@@ -87,8 +107,40 @@ public class DuplicateFiles.StartHomeScan: Gtk.Grid {
         add (main_hbox);
         show_all();
 
-        btn_cancel.clicked.connect ( ()=> {
+        progress_bar.set_text ("");
+        progress_bar.set_show_text (false);
+        progress_bar.visible = false;
 
+        btn_start_scan.clicked.connect( ()=> {
+            scanner.start_scan.begin();
+            GLib.Idle.add( () => {
+                lb_title.label = "Scan in progress";
+                lb_subtitle.label = "Preparing files for scan...";
+                lb_file.label = scanner.prepare_file;
+                string data = "Directories: " + scanner.count_directories.to_string () +
+                " Files: " + scanner.count_files.to_string () +
+                " Total size: " + GLib.format_size(scanner.total_size);
+
+                lb_count.label = data;
+
+                if(scanner.flag_prepare_scan) {
+                    lb_subtitle.label = "Scanning files...";
+                    progress_bar.visible = true;
+                    double progress = scanner.progress;
+
+                    progress_bar.set_fraction (progress);
+
+                    string data_read = "Reading "+ GLib.format_size(scanner.data_read);
+                    lb_count.label  = data_read;
+                    lb_file.label = scanner.actual_file;
+                    return progress_bar.fraction < 1.0;
+                }
+
+                return true;
+            });
+        });
+
+        btn_cancel.clicked.connect ( () => {
             scanner.cancel_operation.cancel ();
             progress_bar.set_fraction (0.0);
             progress_bar.set_show_text (true);
@@ -108,33 +160,23 @@ public class DuplicateFiles.StartHomeScan: Gtk.Grid {
                 resume.fill_resume.begin( (obj, res) => {
                     var result = resume.fill_resume.end(res);
                     if(result) {
-                        resume.fill_panel_categories();
+                        resume.fill_panel_categories.begin( (obj, res) => {
+                            var end = resume.fill_panel_categories.end(res);
+                            if(end) {
+                                resume.hide_info_bar();
+                            }
+                        });
                     }
                 });
 
-                progress_bar.fraction = 0.0;
+                //progress_bar.fraction = 0.0;
             }
         });
     }
-
-    public void launch_scan () {
-
-        progress_bar.set_text ("");
-        progress_bar.set_show_text (false);
-        scanner.start_scan.begin();
-
-        source = GLib.Idle.add( ()=> {
-            double progress = scanner.progress;
-            progress_bar.set_fraction(progress);
-
-            lb_file.label = scanner.actual_file;
-
-            string data_read = "Files read: "+ scanner.count_files.to_string () +
-            " Subdirectories read: "+ scanner.count_directories.to_string () +
-            " Total size: "+ GLib.format_size((int64) scanner.total_size);
-
-            lb_count.label = data_read;
-            return progress < 1.0;
-        });
-    }
 }
+
+
+
+/*
+
+*/

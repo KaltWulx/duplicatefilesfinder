@@ -1,4 +1,4 @@
-public class DuplicateFiles.Panel: Gtk.Grid {
+public class DuplicateFiles.PanelCategory: Gtk.Grid {
     public Gtk.ListBox list_box;
     private Categories categories;
     private CategorySizeSum size_sum;
@@ -9,7 +9,7 @@ public class DuplicateFiles.Panel: Gtk.Grid {
     private CategoryListRow row_image;
     private CategoryListRow row_video;
 
-	public Panel (Categories categories, CategorySizeSum size_sum) {
+	public PanelCategory (Categories categories, CategorySizeSum size_sum) {
 		orientation = Gtk.Orientation.HORIZONTAL;
 		this.categories = categories;
 		this.size_sum = size_sum;

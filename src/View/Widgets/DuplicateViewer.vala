@@ -26,7 +26,6 @@ public class DuplicateFiles.DuplicateViewer : Gtk.Grid {
     }
 
     public void create_widget() {
-
         event_box = new Gtk.EventBox() {
             vexpand = false,
             valign = Gtk.Align.START,

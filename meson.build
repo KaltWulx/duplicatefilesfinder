@@ -24,17 +24,26 @@ sources = files(
 	'src/View/StartHomeScan.vala',
 	'src/View/Resume.vala',
 		'src/View/Widgets/CategoryListRow.vala',
-		'src/View/Widgets/Panel.vala',
+		'src/View/Widgets/ExcludeListRow.vala',
+		'src/View/Widgets/PanelCategory.vala',
 		'src/View/Widgets/DuplicateViewer.vala',
+		'src/View/Widgets/ItemDuplicateViewer.vala',
+		'src/View/Widgets/PreviewContentFile.vala',
+		'src/View/Widgets/Preferences.vala',
 
 	'src/core/Scanner.vala',
 	'src/core/FileOcurrence.vala',
 )
 
 subdir('src')
+subdir('data')
+
 
 executable(
 	meson.project_name(),
 	sources,
 	dependencies: dependencies, install:true
 )
+
+meson.add_install_script('meson/post_install.py')
+

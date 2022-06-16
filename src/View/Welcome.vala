@@ -82,7 +82,7 @@ public class DuplicateFiles.Welcome : Gtk.Grid {
             }
         });
         stack.set_visible_child_name("main");
-        show_all();
+        //show_all();
 	}
 
 	private void create_view_objects() {
@@ -94,7 +94,7 @@ public class DuplicateFiles.Welcome : Gtk.Grid {
     private async void load_views_in_background() {
         prepare_home_scan.create_ui ();
         resume.create_ui ();
-        start_home_scan.create_ui ();
+        //start_home_scan.create_ui ();
     }
 
 	private void scan_home() {

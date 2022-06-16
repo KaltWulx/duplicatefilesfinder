@@ -8,13 +8,16 @@ public class DuplicateFiles.Application : Gtk.Application {
     private Gtk.Button btn_back;
     private Gtk.HeaderBar bar;
     public static Gtk.CssProvider css_provider;
+    public static GLib.Settings settings;
 
     public Application() {
         application_id = "com.github.KaltWulx.duplicatefiles";
         flags |= GLib.ApplicationFlags.HANDLES_OPEN;
+        settings = new GLib.Settings("com.github.KaltWulx.duplicatefiles");
     }
 
     protected override void activate() {
+
 
         window = new Gtk.ApplicationWindow (this);
 		window.window_position = Gtk.WindowPosition.CENTER;
@@ -33,6 +36,17 @@ public class DuplicateFiles.Application : Gtk.Application {
         bar.pack_start(btn_back);
         btn_back.no_show_all = true;
 
+        Preferences preferences = new Preferences(window);
+
+        var btn_config = new Gtk.Button.from_icon_name("preferences-system-symbolic", Gtk.IconSize.BUTTON);
+        btn_config.set_tooltip_text("Preferences dialog");
+        bar.pack_end(btn_config);
+
+        btn_config.clicked.connect( ()=> {
+            preferences.show_all();
+        });
+
+
         stack = new Gtk.Stack() {
 		    transition_type = Gtk.StackTransitionType.CROSSFADE
 		};
@@ -46,6 +60,10 @@ public class DuplicateFiles.Application : Gtk.Application {
 
         window.show_all ();
         window.present();
+
+
+        Granite.Services.Application.set_progress_visible.begin (true);
+		Granite.Services.Application.set_progress.begin (0.2f);
     }
 
      public override void startup () {
@@ -68,6 +86,50 @@ public class DuplicateFiles.Application : Gtk.Application {
         base.quit_mainloop();
     }
 
+
+    public static bool scan_hidden_file() {
+        return Application.settings.get_boolean("hidden-file");
+    }
+
+    public static void set_scan_hidden_file(bool scan_file) {
+        Application.settings.set_boolean("hidden-file", scan_file);
+    }
+
+    public static bool scan_hidden_directory() {
+        return Application.settings.get_boolean("hidden-directory");
+    }
+
+
+    public static void set_scan_hidden_directory(bool scan_directory) {
+        Application.settings.set_boolean("hidden-directory", scan_directory);
+    }
+
+    public static int minimum_file_size() {
+        int setting = Application.settings.get_int("minimum-file-size");
+        //1Kb 5Kb 1Mb 5Mb
+        switch(setting) {
+            case 1:
+                return 1024;
+            break;
+
+            case 2:
+                return 5 * 1024;
+            break;
+
+            case 3:
+                return 1 * 1024 * 1024;
+
+            break;
+
+            case 4:
+                return 5 * 1024 * 1024;
+            break;
+
+            default:
+                return 1024;
+            break;
+        }
+    }
 }
 
 public static int main(string []args) {

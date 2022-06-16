@@ -1,0 +1,35 @@
+<?xml version="1.0" enconding="UTF-8"?>
+<schemalist>
+  <schema path="/com/github/KaltWulx/duplicatefiles/" id="com.github.KaltWulx.duplicatefiles">
+    <key name="minimum-file-size" type="i">
+     <default>0</default>
+      <summary>Minimum file size</summary>
+      <description>The minimum file size for been considerer in a scann</description>
+    </key>
+
+    <key name="checksum-type" type="i">
+      <default>0</default>
+      <summary>Checksum Type</summary>
+      <description>The checksum algorithm</description>
+    </key>
+
+    <key name="hidden-file" type="b">
+      <default>true</default>
+      <summary>Hidden files</summary>
+      <description>Search for hidden files</description>
+    </key>
+
+    <key name="hidden-directory" type="b">
+      <default>true</default>
+      <summary>Hidden folder</summary>
+      <description>Search for hidden folders</description>
+    </key>
+
+    <key name="exclude-files" type="b">
+      <default>false</default>
+      <summary>Hidden files</summary>
+      <description>Search for hidden files</description>
+    </key>
+
+  </schema>
+</schemalist>

@@ -1,3 +1,4 @@
+
 public class DuplicateFiles.PrepareHomeScan : Gtk.Grid {
 
     public Gtk.Stack stack;
@@ -65,7 +66,7 @@ public class DuplicateFiles.PrepareHomeScan : Gtk.Grid {
         btn_show_scan_window.clicked.connect( ()=> {
             stack.set_visible_child_name("start-home-scan");
             btn_back.set_label("Prepare Scan");
-            scan_window.launch_scan();
+            scan_window.create_ui ();
         });
     }
 }
